@@ -14,10 +14,10 @@ interface PendingProduct {
   description: string | null;
   local_price: number;
   stock_count: number;
-  stores: {
+  store: {
     name: string;
     vendor_id: string;
-  };
+  } | null;
   created_at: string;
 }
 
@@ -96,7 +96,7 @@ export function AdminProductReview({ products }: AdminProductReviewProps) {
                   {product.description}
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
-                  <span>Store: {product.stores.name}</span>
+                  <span>Store: {product.store?.name ?? "Unknown"}</span>
                   <span>Price: ${product.local_price.toFixed(2)}</span>
                   <span>Stock: {product.stock_count}</span>
                   <span>

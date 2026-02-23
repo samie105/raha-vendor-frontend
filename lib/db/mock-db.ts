@@ -104,10 +104,11 @@ function generateSessionToken(): string {
 
 export const mockDB = {
   // Users
-  async createUser(data: { email: string; password: string; role: string }) {
+  async createUser(data: { email: string; password: string; role: "admin" | "vendor" }) {
     const user: User = {
       id: generateId(),
       email: data.email,
+      password_hash: data.password,
       role: data.role,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

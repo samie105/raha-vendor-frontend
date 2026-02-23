@@ -35,7 +35,7 @@ export function SignUpForm() {
       if (typeof result.error === "string") {
         setMessage(result.error);
       } else {
-        setErrors(result.error);
+        setErrors((result.error ?? {}) as Record<string, string[]>);
       }
     } else {
       setMessage("Sign up successful! Check your email to confirm.");

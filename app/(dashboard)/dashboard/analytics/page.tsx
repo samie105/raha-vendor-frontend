@@ -23,8 +23,9 @@ import {
 
 interface AnalyticsData {
   date: string;
-  total_sales: number;
-  order_count: number;
+  revenue: number;
+  orders: number;
+  items: number;
   average_order_value: number;
 }
 
@@ -53,11 +54,16 @@ export default function AnalyticsPage() {
         ]);
 
         if ("data" in metricsResult) {
-          setChartData(metricsResult.data);
+          setChartData(
+            (metricsResult.data ?? []).map((d) => ({
+              ...d,
+              average_order_value: d.orders > 0 ? d.revenue / d.orders : 0,
+            }))
+          );
         }
 
         if ("data" in revenueResult) {
-          setTotalRevenue(revenueResult.data.total_revenue);
+          setTotalRevenue(revenueResult.data ?? 0);
         }
       } catch {
         setError("Failed to load analytics data");
@@ -133,7 +139,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  const totalOrders = chartData.reduce((sum, d) => sum + d.order_count, 0);
+  const totalOrders = chartData.reduce((sum, d) => sum + d.orders, 0);
   const avgOrderValue = chartData.length > 0
     ? chartData.reduce((sum, d) => sum + d.average_order_value, 0) / chartData.length
     : 0;
@@ -287,7 +293,7 @@ export default function AnalyticsPage() {
                   />
                   <Area
                     type="monotone"
-                    dataKey="total_sales"
+                    dataKey="revenue"
                     stroke="hsl(var(--primary))"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -339,7 +345,7 @@ export default function AnalyticsPage() {
                       }}
                     />
                     <Bar 
-                      dataKey="order_count" 
+                      dataKey="orders" 
                       fill="hsl(var(--chart-1))" 
                       radius={[4, 4, 0, 0]}
                       name="Orders"
